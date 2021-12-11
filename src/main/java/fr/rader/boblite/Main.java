@@ -1,6 +1,7 @@
 package fr.rader.boblite;
 
 import fr.rader.boblite.guis.Menu;
+import fr.rader.boblite.guis.ProgressBar;
 import fr.rader.boblite.guis.ProjectSelector;
 import fr.rader.boblite.utils.*;
 
@@ -84,6 +85,14 @@ public class Main {
             // or any packets that we don't want to edit
             DataWriter writer = new DataWriter();
 
+            // getting the replay duration for the progress bar
+            Double duration = (Double) replayData.getMetaData("duration");
+            // creating the progress bar and setting the action text
+            ProgressBar progressBar = new ProgressBar(duration.intValue());
+            progressBar.setActionText("Editing the replay...");
+            // showing the progress bar
+            progressBar.show();
+
             // iterate while we still have some data in the reader
             while (reader.getLength() != 0) {
                 // get the timestamp, the size and the packet id
@@ -91,9 +100,12 @@ public class Main {
                 int size = reader.readInt();
                 int packetID = reader.readVarInt();
 
+                // changing the progress bar value
+                progressBar.setProgressBarValue(timestamp);
+
                 // check if the packet id is a time packet,
                 // and if the changeTime checkbox is checked
-                if(packetID == timePacketID && menu.isChangeTimeChecked()) {
+                if(menu.isChangeTimeChecked() && packetID == timePacketID) {
                     // writing packet header
                     writer.writeInt(timestamp);
                     writer.writeInt(size);
@@ -112,7 +124,7 @@ public class Main {
 
                 // check if the packet id is a weather packet,
                 // and if the removeRain checkbox is checked
-                if (packetID == weatherPacketID && menu.isRemoveRainChecked()) {
+                if (menu.isRemoveRainChecked() && packetID == weatherPacketID) {
                     // get the reason, we don't want to ignore it because
                     // this packet isn't always used for the weather
                     int reason = reader.readByte();
@@ -151,10 +163,17 @@ public class Main {
             // we then flush the writer
             writer.flush();
 
+            // changing the progress bar action text,
+            // as we're now doing something else
+            progressBar.setActionText("Writing the replay, this can take a while...");
+
             // we open the zip file, write the recording.tmcpr file and close the zip
             replayZip.open();
             replayZip.addFile(writer.getInputStream(), "recording.tmcpr");
             replayZip.close();
+
+            // kill the progress bar window as it's now useless
+            progressBar.kill();
 
             // then open the file explorer to the folder that contains the replay
             IO.openFileExplorer(replayData.getMcprFile().getParentFile());

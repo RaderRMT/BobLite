@@ -28,7 +28,15 @@ public class ReplayData {
         this.main = main;
 
         boolean alreadyHasReplay = false;
-        for (File file : project.listFiles()) {
+
+        File[] projectFiles = project.listFiles();
+
+        if (projectFiles == null) {
+            System.out.println("'" + project.getAbsolutePath() + "' is not a valid path.");
+            System.exit(0);
+        }
+
+        for (File file : projectFiles) {
             if (file.getName().endsWith(".mcpr")) {
                 alreadyHasReplay = true;
                 mcprFile = file;
@@ -39,8 +47,13 @@ public class ReplayData {
             mcprFile = IO.openFilePrompt(OS.getMinecraftFolder() + "replay_recordings/", "Replay File", "mcpr");
         }
 
-        if (mcprFile == null) {
+        if (mcprFile == null || mcprFile.isDirectory()) {
             System.out.println("No Replay selected, stopping.");
+            System.exit(0);
+        }
+
+        if (!mcprFile.getName().endsWith("mcpr")) {
+            System.out.println("File is not a replay");
             System.exit(0);
         }
 

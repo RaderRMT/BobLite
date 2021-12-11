@@ -28,6 +28,8 @@ public class IO {
         fileChooser.setMultiSelectionEnabled(false);
         // set a file filter to only see files with the given extensions
         fileChooser.setFileFilter(new ReplayFileFilter(description, extensions));
+        // show hidden files
+        fileChooser.setFileHidingEnabled(false);
 
         // show the file chooser to the user and wait for an answer
         int option = fileChooser.showOpenDialog(null);

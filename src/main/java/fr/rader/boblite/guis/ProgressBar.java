@@ -26,6 +26,8 @@ public class ProgressBar {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // moving the window to the center of the screen
         frame.setLocationRelativeTo(null);
+        // disable resizing
+        frame.setResizable(false);
 
         // setting the progress bar's max value
         this.progressBar.setMaximum(progressBarMaxValue);

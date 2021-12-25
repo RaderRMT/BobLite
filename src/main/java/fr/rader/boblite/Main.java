@@ -36,6 +36,7 @@ public class Main {
         // here, we get the correct packet id depending on the protocol version
         int timePacketID;
         int weatherPacketID;
+        int chatPacketID;
         switch (replayData.getProtocolVersion()) {
             // 1.16.x
             case 735:
@@ -45,6 +46,7 @@ public class Main {
             case 754:
                 timePacketID = 0x4E;
                 weatherPacketID = 0x1D;
+                chatPacketID = 0x0E;
                 break;
 
             // 1.17.x
@@ -52,12 +54,14 @@ public class Main {
             case 756:
                 timePacketID = 0x58;
                 weatherPacketID = 0x1E;
+                chatPacketID = 0x0F;
                 break;
 
             // 1.18(.1)
             case 757:
                 timePacketID = 0x59;
                 weatherPacketID = 0x1E;
+                chatPacketID = 0x0F;
                 break;
 
             // we show an error and stop if the protocol isn't supported
@@ -103,9 +107,18 @@ public class Main {
                 // changing the progress bar value
                 progressBar.setProgressBarValue(timestamp);
 
+                // check if the packet id is a chat message packet,
+                // and if the removeChat checkbox is checked
+                if (menu.isRemoveChatChecked() && packetID == chatPacketID) {
+                    // if bob has to remove the chat packet,
+                    // we skip it, and we don't write it
+                    reader.skip(size - 1);
+                    continue;
+                }
+
                 // check if the packet id is a time packet,
                 // and if the changeTime checkbox is checked
-                if(menu.isChangeTimeChecked() && packetID == timePacketID) {
+                if (menu.isChangeTimeChecked() && packetID == timePacketID) {
                     // writing packet header
                     writer.writeInt(timestamp);
                     writer.writeInt(size);

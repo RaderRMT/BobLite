@@ -17,9 +17,11 @@ public class Menu {
     private JLabel removeRainLabel;
     private JLabel changeTimeLabel;
     private JLabel newTimeLabel;
+    private JLabel removeChatLabel;
 
     private JCheckBox removeRainCheckBox;
     private JCheckBox changeTimeCheckBox;
+    private JCheckBox removeChatCheckBox;
 
     private JSpinner newTimeSpinner;
 
@@ -106,6 +108,16 @@ public class Menu {
     }
 
     /**
+     * Tells Bob if the chat has to be removed
+     *
+     * @return true if removeChatCheckBox is selected<br>
+     * false otherwise
+     */
+    public boolean isRemoveChatChecked() {
+        return removeChatCheckBox.isSelected();
+    }
+
+    /**
      * Get the new time for the replay
      *
      * @return the spinner value, the value is inside [-24000; 24000]
@@ -153,7 +165,7 @@ public class Menu {
     private void $$$setupUI$$$() {
         createUIComponents();
         panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
         removeRainCheckBox = new JCheckBox();
         removeRainCheckBox.setEnabled(true);
         removeRainCheckBox.setSelected(true);
@@ -174,8 +186,14 @@ public class Menu {
         panel.add(newTimeLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         goButton = new JButton();
         goButton.setText("Go!");
-        panel.add(goButton, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.add(goButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         panel.add(newTimeSpinner, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        removeChatLabel = new JLabel();
+        removeChatLabel.setText("Remove Chat");
+        panel.add(removeChatLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        removeChatCheckBox = new JCheckBox();
+        removeChatCheckBox.setText("");
+        panel.add(removeChatCheckBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

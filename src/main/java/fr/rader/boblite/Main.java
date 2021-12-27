@@ -38,6 +38,56 @@ public class Main {
         int weatherPacketID;
         int chatPacketID;
         switch (replayData.getProtocolVersion()) {
+            // 1.8.x:
+            case 47:
+                timePacketID = 0x03;
+                weatherPacketID = 0x2B;
+                chatPacketID = 0x02;
+                break;
+
+            // 1.9.x
+            case 108:
+            case 109:
+            case 110:
+            // 1.10.x
+            case 210:
+            // 1.11.x
+            case 315:
+            case 316:
+                timePacketID = 0x44;
+                weatherPacketID = 0x1E;
+                chatPacketID = 0x0F;
+                break;
+
+            // 1.12.x
+            case 335:
+            case 338:
+            case 340:
+                timePacketID = 0x47;
+                weatherPacketID = 0x1E;
+                chatPacketID = 0x0F;
+                break;
+
+            // 1.14.x
+            case 477:
+            case 480:
+            case 485:
+            case 490:
+            case 498:
+                timePacketID = 0x4E;
+                weatherPacketID = 0x1E;
+                chatPacketID = 0x0E;
+                break;
+
+            // 1.15.x
+            case 573:
+            case 575:
+            case 578:
+                timePacketID = 0x4F;
+                weatherPacketID = 0x1F;
+                chatPacketID = 0x0F;
+                break;
+
             // 1.16.x
             case 735:
             case 736:

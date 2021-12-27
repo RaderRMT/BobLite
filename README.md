@@ -6,6 +6,7 @@ This is the lite version of Bob.
 
 - Removing the rain/thunder
 - Changing the time
+- Removing the chat
 
 ### Supported versions:
 

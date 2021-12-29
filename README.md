@@ -23,9 +23,10 @@ This is the lite version of Bob.
 
 ## How to use:
 
-- Double click the BobLite jar file. That will open the Project Selector
+- Double-click the BobLite jar file. That will open the Project Selector
 - Create a new project, select it and click `Open Project`
 - After that, it should be pretty straight forward. The time is in ticks, like the `/time set` command
+- Finally, a new file chooser will appear. Select your drive with the most storage space. That will be where the temporary file will be created.
 
 Once bob is done working on your replay, it'll open a file explorer. You can now copy the replay and paste it in the `.minecraft/replay_recordings/` folder
 

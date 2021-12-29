@@ -44,14 +44,20 @@ public class IO {
     }
 
     public static void writeNBTFile(File destination, NBTCompound compound) {
-        // create a data writer to write the compound to an input stream
-        DataWriter writer = new DataWriter();
+        try {
+            // create a data writer to write the compound to an input stream
+            DataWriter writer = new DataWriter();
 
-        // write the compound to the data writer
-        compound.writeNBT(writer);
+            // write the compound to the data writer
+            compound.writeNBT(writer);
 
-        // write the data writer's data to the destination file
-        writeFile(destination, writer.getInputStream());
+            // write the data writer's data to the destination file
+            writeFile(destination, writer.getInputStream());
+
+            writer.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void writeFile(File destination, InputStream inputStream) {

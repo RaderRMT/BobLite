@@ -6,10 +6,13 @@ import fr.rader.boblite.guis.ProjectSelector;
 import fr.rader.boblite.utils.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public class Main {
+
+    public static final Image BOB_LOGO = new ImageIcon(Main.class.getResource("/bob_logo.png")).getImage();
 
     private Projects projects;
 
@@ -37,78 +40,84 @@ public class Main {
         int timePacketID;
         int weatherPacketID;
         int chatPacketID;
-        switch (replayData.getProtocolVersion()) {
-            // 1.8.x:
-            case 47:
+        switch ((String) replayData.getMetaData("mcversion")) {
+            case "1.8":
+            case "1.8.1":
+            case "1.8.2":
+            case "1.8.3":
+            case "1.8.4":
+            case "1.8.5":
+            case "1.8.6":
+            case "1.8.7":
+            case "1.8.8":
+            case "1.8.9":
                 timePacketID = 0x03;
                 weatherPacketID = 0x2B;
                 chatPacketID = 0x02;
                 break;
 
-            // 1.9.x
-            case 108:
-            case 109:
-            case 110:
-            // 1.10.x
-            case 210:
-            // 1.11.x
-            case 315:
-            case 316:
+            case "1.9":
+            case "1.9.1":
+            case "1.9.2":
+            case "1.9.3":
+            case "1.9.4":
+            case "1.10":
+            case "1.10.1":
+            case "1.10.2":
+            case "1.11":
+            case "1.11.1":
+            case "1.11.2":
                 timePacketID = 0x44;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0F;
                 break;
 
-            // 1.12.x
-            case 335:
-            case 338:
-            case 340:
+            case "1.12":
+            case "1.12.1":
+            case "1.12.2":
                 timePacketID = 0x47;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0F;
                 break;
 
-            // 1.14.x
-            case 477:
-            case 480:
-            case 485:
-            case 490:
-            case 498:
+            case "1.14":
+            case "1.14.1":
+            case "1.14.2":
+            case "1.14.3":
+            case "1.14.4":
                 timePacketID = 0x4E;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0E;
                 break;
 
-            // 1.15.x
-            case 573:
-            case 575:
-            case 578:
+            case "1.15":
+            case "1.15.1":
+            case "1.15.2":
                 timePacketID = 0x4F;
                 weatherPacketID = 0x1F;
                 chatPacketID = 0x0F;
                 break;
 
-            // 1.16.x
-            case 735:
-            case 736:
-            case 751:
-            case 753:
-            case 754:
+            case "1.16":
+            case "1.16.1":
+            case "1.16.2":
+            case "1.16.3":
+            case "1.16.4":
+            case "1.16.5":
                 timePacketID = 0x4E;
                 weatherPacketID = 0x1D;
                 chatPacketID = 0x0E;
                 break;
 
-            // 1.17.x
-            case 755:
-            case 756:
+            case "1.17":
+            case "1.17.1":
                 timePacketID = 0x58;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0F;
                 break;
 
-            // 1.18(.1)
-            case 757:
+            case "1.18":
+            case "1.18.1":
                 timePacketID = 0x59;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0F;
@@ -116,7 +125,7 @@ public class Main {
 
             // we show an error and stop if the protocol isn't supported
             default:
-                JOptionPane.showMessageDialog(null, "Error: unsupported protocol: " + replayData.getProtocolVersion() + ", Minecraft version: " + replayData.getMetaData("mcversion"));
+                JOptionPane.showMessageDialog(null, "Error: unsupported Minecraft version: " + replayData.getMetaData("mcversion"));
                 return;
         }
 
@@ -138,6 +147,11 @@ public class Main {
             // we also create a data writer to write the modified packets
             // or any packets that we don't want to edit
             DataWriter writer = new DataWriter();
+
+            writer.writeInt(reader.readInt());
+            int length = reader.readInt();
+            writer.writeInt(length);
+            writer.writeByteArray(reader.readFollowingBytes(length));
 
             // getting the replay duration for the progress bar
             Double duration = (Double) replayData.getMetaData("duration");
@@ -234,6 +248,8 @@ public class Main {
             replayZip.open();
             replayZip.addFile(writer.getInputStream(), "recording.tmcpr");
             replayZip.close();
+
+            writer.clear();
 
             // kill the progress bar window as it's now useless
             progressBar.kill();

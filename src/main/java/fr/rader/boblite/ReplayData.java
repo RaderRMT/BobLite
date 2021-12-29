@@ -95,8 +95,6 @@ public class ReplayData {
     private void checkUnofficialReplays() {
         if (replayZip.hasEntry("badlion.json") ||
                 !replayZip.hasEntry("mods.json") ||
-                !replayZip.hasEntry("recording.tmcpr.crc32") ||
-                !metaData.containsKey("serverName") ||
                 !((String) metaData.get("generator")).startsWith("ReplayMod")) {
             stopBob();
         }
@@ -118,10 +116,6 @@ public class ReplayData {
 
     public Object getMetaData(String key) {
         return metaData.get(key);
-    }
-
-    public int getProtocolVersion() {
-        return (int) ((double) metaData.get("protocol"));
     }
 
     public ReplayZip getReplayZip() {

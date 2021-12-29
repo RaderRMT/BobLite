@@ -8,19 +8,22 @@ public class DataWriter {
 
     private static final int BUFFER_SIZE = 16384;
 
-    private final ByteArrayInOutStream stream;
+    private final File tempFile;
+
+    private final FileOutputStream outputStream;
+
     private final byte[] buffer = new byte[BUFFER_SIZE];
 
     private int index = 0;
 
-    public DataWriter() {
-        stream = new ByteArrayInOutStream(1);
+    public DataWriter() throws IOException {
+        this.tempFile = File.createTempFile("bob-recording-tmcpr", null);
+        this.outputStream = new FileOutputStream(tempFile);
     }
 
     public void writeByte(int value) {
         if (index == buffer.length) {
-            stream.write(buffer, 0, index);
-            index = 0;
+            flush();
         }
 
         buffer[index] = (byte) (value & 0xff);
@@ -85,19 +88,25 @@ public class DataWriter {
         writeByteArray(value.getBytes(StandardCharsets.UTF_8));
     }
 
-    public InputStream getInputStream() {
+    public InputStream getInputStream() throws IOException {
         flush();
 
-        return stream.getInputStream();
+        outputStream.close();
+
+        return new FileInputStream(tempFile);
     }
 
     public void flush() {
         try {
-            stream.write(buffer, 0, index);
-            stream.flush();
+            outputStream.write(buffer, 0, index);
+            outputStream.flush();
             index = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clear() {
+        tempFile.delete();
     }
 }

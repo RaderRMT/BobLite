@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 
 public class DataWriter {
 
+    private static final String TEMP_FILE_NAME = "bob-recording-tmcpr";
+
     private static final int BUFFER_SIZE = 16384;
 
     private final File tempFile;
@@ -16,8 +18,24 @@ public class DataWriter {
 
     private int index = 0;
 
-    public DataWriter() throws IOException {
-        this.tempFile = File.createTempFile("bob-recording-tmcpr", null);
+    public DataWriter(boolean ignoreTempLocation) throws IOException {
+        if (!ignoreTempLocation) {
+            File file = IO.openFilePrompt(
+                    null,
+                    false,
+                    "Temporary file location",
+                    ""
+            );
+
+            if (file == null) {
+                System.exit(0);
+            }
+
+            this.tempFile = File.createTempFile(TEMP_FILE_NAME, null, file.getAbsoluteFile());
+        } else {
+            this.tempFile = File.createTempFile(TEMP_FILE_NAME, null);
+        }
+
         this.outputStream = new FileOutputStream(tempFile);
     }
 

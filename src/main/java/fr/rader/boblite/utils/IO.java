@@ -20,19 +20,31 @@ public class IO {
      * @return {@link File} - if the user selected a file and validated<br>
      *         {@code null} - otherwise
      */
-    public static File openFilePrompt(String path, String description, String... extensions) {
+    public static File openFilePrompt(String path, boolean isOpenDialog, String description, String... extensions) {
         JFileChooser fileChooser = new JFileChooser(path);
         // i don't know why this is here and i'm too scared to remove it
         fileChooser.setAcceptAllFileFilterUsed(false);
         // disable the ability to select multiple files
         fileChooser.setMultiSelectionEnabled(false);
-        // set a file filter to only see files with the given extensions
-        fileChooser.setFileFilter(new ReplayFileFilter(description, extensions));
+
+        if (isOpenDialog) {
+            // set a file filter to only see files with the given extensions
+            fileChooser.setFileFilter(new ReplayFileFilter(description, extensions));
+        } else {
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        }
+
         // show hidden files
         fileChooser.setFileHidingEnabled(false);
 
-        // show the file chooser to the user and wait for an answer
-        int option = fileChooser.showOpenDialog(null);
+        int option;
+        if (isOpenDialog) {
+            // show the file chooser to the user and wait for an answer
+            option = fileChooser.showOpenDialog(null);
+        } else {
+            option = fileChooser.showSaveDialog(null);
+        }
+
         // if the user selected a file,
         // we then return it
         if (option == JFileChooser.APPROVE_OPTION) {
@@ -46,7 +58,7 @@ public class IO {
     public static void writeNBTFile(File destination, NBTCompound compound) {
         try {
             // create a data writer to write the compound to an input stream
-            DataWriter writer = new DataWriter();
+            DataWriter writer = new DataWriter(true);
 
             // write the compound to the data writer
             compound.writeNBT(writer);

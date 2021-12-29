@@ -146,7 +146,7 @@ public class Main {
             DataReader reader = new DataReader(replayZip.getEntry("recording.tmcpr"));
             // we also create a data writer to write the modified packets
             // or any packets that we don't want to edit
-            DataWriter writer = new DataWriter();
+            DataWriter writer = new DataWriter(false);
 
             writer.writeInt(reader.readInt());
             int length = reader.readInt();

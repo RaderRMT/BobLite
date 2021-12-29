@@ -44,7 +44,7 @@ public class ReplayData {
         }
 
         if (!alreadyHasReplay) {
-            mcprFile = IO.openFilePrompt(OS.getMinecraftFolder() + "replay_recordings/", "Replay File", "mcpr");
+            mcprFile = IO.openFilePrompt(OS.getMinecraftFolder() + "replay_recordings/", true, "Replay File", "mcpr");
         }
 
         if (mcprFile == null || mcprFile.isDirectory()) {

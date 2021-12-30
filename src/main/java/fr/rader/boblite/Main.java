@@ -118,7 +118,7 @@ public class Main {
 
         System.out.println("Using " + executorThreadNumber + " thread(s) for " + replays.size() + " task(s)...");
 
-        ExecutorService executor = Executors.newFixedThreadPool(totalSystemThreadNumber);
+        ExecutorService executor = Executors.newFixedThreadPool(executorThreadNumber);
 
         long startTime = System.currentTimeMillis();
 

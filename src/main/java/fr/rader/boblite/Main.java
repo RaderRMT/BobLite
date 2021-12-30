@@ -89,6 +89,7 @@ public class Main {
         // we then show the edit menu
         Menu menu = new Menu();
         menu.show();
+
         // if the user doesn't want to edit their replay,
         // we stop bob
         if (!menu.wasGoPressed()) {
@@ -137,7 +138,8 @@ public class Main {
             try {
                 // Timeout doesn't really matter in this use case as we will want to wait for all tasks to complete before terminating.
                 isDone = executor.awaitTermination(7, TimeUnit.DAYS);
-            } catch (InterruptedException ex) { }
+            } catch (InterruptedException ex) {
+            }
         }
 
         long finishTime = System.currentTimeMillis();

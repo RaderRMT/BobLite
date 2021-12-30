@@ -17,37 +17,61 @@ public class IO {
      * @param path path to where the JFileChooser is opening to
      * @param description a description of the files we want
      * @param extensions a list of valid file extensions
+     * @return {@link File}[] - if the user selected a file or files and validated<br>
+     *         {@code null} - otherwise
+     */
+    public static File[] openFilePrompt(String path, String description, String... extensions) {
+        JFileChooser fileChooser = new JFileChooser(path);
+        // i don't know why this is here and i'm too scared to remove it
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        // enable the ability to select multiple files
+        fileChooser.setMultiSelectionEnabled(true);
+
+        // set a file filter to only see files with the given extensions
+        fileChooser.setFileFilter(new ReplayFileFilter(description, extensions));
+
+        // show hidden files
+        fileChooser.setFileHidingEnabled(false);
+
+        // show the open file chooser to the user and wait for an answer
+        int option = fileChooser.showOpenDialog(null);
+
+        // if the user selected a file,
+        // we then return it
+        if (option == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFiles();
+        }
+
+        // if they cancelled, we return false
+        return null;
+    }
+
+    /**
+     * Open a JFileChooser at the given path.
+     *
+     * @param path path to where the JFileChooser is opening to
      * @return {@link File} - if the user selected a file and validated<br>
      *         {@code null} - otherwise
      */
-    public static File openFilePrompt(String path, boolean isOpenDialog, String description, String... extensions) {
+    public static File saveFilePrompt(String path) {
         JFileChooser fileChooser = new JFileChooser(path);
         // i don't know why this is here and i'm too scared to remove it
         fileChooser.setAcceptAllFileFilterUsed(false);
         // disable the ability to select multiple files
         fileChooser.setMultiSelectionEnabled(false);
 
-        if (isOpenDialog) {
-            // set a file filter to only see files with the given extensions
-            fileChooser.setFileFilter(new ReplayFileFilter(description, extensions));
-        } else {
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        }
+        // only want directories for the save file prompt
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         // show hidden files
         fileChooser.setFileHidingEnabled(false);
 
-        int option;
-        if (isOpenDialog) {
-            // show the file chooser to the user and wait for an answer
-            option = fileChooser.showOpenDialog(null);
-        } else {
-            option = fileChooser.showSaveDialog(null);
-        }
+        // show the save file chooser to the user and wait for an answer
+        int option = fileChooser.showSaveDialog(null);
 
         // if the user selected a file,
         // we then return it
-        if (option == JFileChooser.APPROVE_OPTION) {
+        if (option == JFileChooser.APPROVE_OPTION){
             return fileChooser.getSelectedFile();
         }
 
@@ -58,7 +82,7 @@ public class IO {
     public static void writeNBTFile(File destination, NBTCompound compound) {
         try {
             // create a data writer to write the compound to an input stream
-            DataWriter writer = new DataWriter(true);
+            DataWriter writer = new DataWriter();
 
             // write the compound to the data writer
             compound.writeNBT(writer);

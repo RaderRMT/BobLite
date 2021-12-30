@@ -18,24 +18,13 @@ public class DataWriter {
 
     private int index = 0;
 
-    public DataWriter(boolean ignoreTempLocation) throws IOException {
-        if (!ignoreTempLocation) {
-            File file = IO.openFilePrompt(
-                    null,
-                    false,
-                    "Temporary file location",
-                    ""
-            );
+    public DataWriter(File tempFileDirectory) throws IOException {
+        this.tempFile = File.createTempFile(TEMP_FILE_NAME, null, tempFileDirectory.getAbsoluteFile());
+        this.outputStream = new FileOutputStream(tempFile);
+    }
 
-            if (file == null) {
-                System.exit(0);
-            }
-
-            this.tempFile = File.createTempFile(TEMP_FILE_NAME, null, file.getAbsoluteFile());
-        } else {
-            this.tempFile = File.createTempFile(TEMP_FILE_NAME, null);
-        }
-
+    public DataWriter() throws IOException {
+        this.tempFile = File.createTempFile(TEMP_FILE_NAME, null);
         this.outputStream = new FileOutputStream(tempFile);
     }
 

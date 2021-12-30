@@ -20,9 +20,15 @@ public class EditReplayTask implements Runnable {
     private final boolean removeRain;
 
     public EditReplayTask(ReplayData replayData, File tempFileDirectory, Menu menu) throws NullPointerException {
-        if(replayData == null) throw new NullPointerException("replayData is null");
-        if(tempFileDirectory == null) throw new NullPointerException("tempFileDirectory is null");
-        if(menu == null) throw new NullPointerException("menu is null");
+        if(replayData == null){
+            throw new NullPointerException("replayData is null");
+        }
+        if(tempFileDirectory == null){
+            throw new NullPointerException("tempFileDirectory is null");
+        }
+        if(menu == null){
+            throw new NullPointerException("menu is null");
+        }
 
         this.replayData = replayData;
         this.tempFileDirectory = tempFileDirectory;

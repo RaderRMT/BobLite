@@ -155,7 +155,7 @@ public class Main {
         }
 
         long finishTime = System.currentTimeMillis();
-        System.out.println("Competed " + replays.size() + " task(s) in " + (int)(((finishTime - startTime) / 1000) / 60) + "m " + (int)(((finishTime - startTime) / 1000) % 60) + "s");
+        System.out.println("Completed " + replays.size() + " task(s) in " + (int)(((finishTime - startTime) / 1000) / 60) + "m " + (int)(((finishTime - startTime) / 1000) % 60) + "s");
         System.out.println("File(s) located at " + projectFolder.getAbsolutePath().toString());
 
         // Open the file explorer where the replay(s) are saved.

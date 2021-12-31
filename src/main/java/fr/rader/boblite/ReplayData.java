@@ -17,19 +17,15 @@ public class ReplayData {
     private final ReplayZip replayZip;
     private final File mcprFile;
 
-    private final Main main;
+    private final BobLite bobLite;
 
-    public ReplayData(File mcprFile, Main main) throws NullPointerException {
+    public ReplayData(File mcprFile, BobLite bobLite) throws NullPointerException {
         if (mcprFile == null) {
             throw new NullPointerException("The mcpr file cannot be null");
         }
 
-        if (main == null) {
-            throw new NullPointerException("main is null");
-        }
-
         this.mcprFile = mcprFile;
-        this.main = main;
+        this.bobLite = bobLite;
 
         this.replayZip = new ReplayZip(mcprFile);
         readMetaData();
@@ -69,8 +65,8 @@ public class ReplayData {
         JOptionPane.showMessageDialog(null,  mcprFile.getName() + "\nBadlion/Lunar Replay detected, stopping Bob.\nPlease use the official ReplayMod.");
 
         // clear last opened project and delete files
-        main.getProjects().removeProject(main.getProjectName());
-        main.getProjects().saveProjects();
+        bobLite.getProjects().removeProject(bobLite.getProjectName());
+        bobLite.getProjects().saveProjects();
 
         System.exit(0);
     }

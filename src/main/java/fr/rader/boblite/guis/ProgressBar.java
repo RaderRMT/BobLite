@@ -2,8 +2,7 @@ package fr.rader.boblite.guis;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
-import fr.rader.boblite.Main;
+import fr.rader.boblite.BobLite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +19,7 @@ public class ProgressBar {
         // creating the frame
         frame = new JFrame("Bob");
 
-        frame.setIconImage(Main.BOB_LOGO);
+        frame.setIconImage(BobLite.BOB_LOGO);
 
         // setting a relatively good size
         frame.setSize(350, 100);

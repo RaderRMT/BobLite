@@ -2,7 +2,7 @@ package fr.rader.boblite.guis;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import fr.rader.boblite.Main;
+import fr.rader.boblite.BobLite;
 import fr.rader.boblite.Projects;
 import fr.rader.boblite.listeners.selector.DeleteProjectListener;
 import fr.rader.boblite.listeners.selector.NewProjectListener;
@@ -46,7 +46,7 @@ public class ProjectSelector {
         // create the frame (it's a dialog to pause the execution until it's closed)
         dialog = new JDialog(null, "Bob Project Selector", Dialog.ModalityType.DOCUMENT_MODAL);
 
-        dialog.setIconImage(Main.BOB_LOGO);
+        dialog.setIconImage(BobLite.BOB_LOGO);
 
         // setting the size to a relatively good size
         dialog.setSize(400, 300);

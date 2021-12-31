@@ -39,58 +39,69 @@ public class Main {
         // get the project folder from the project name
         File projectFolder = new File(OS.getBobFolder() + "projects/" + this.projectName);
 
+        // get all the files in the project folder
         File[] projectFiles = projectFolder.listFiles();
-
+        // if projectsFiles is null, that means
+        // the project folder doesn't exist, so we exit
         if (projectFiles == null) {
             System.out.println("'" + projectFolder.getAbsolutePath() + "' is not a valid path.");
             System.exit(0);
         }
 
-        // Load .mcpr files from the project folder.
-        List<ReplayData> replays = new ArrayList<ReplayData>();
+        // load .mcpr files from the project folder
+        List<ReplayData> replays = new ArrayList<>();
+        // we loop through all the files
         for (File file : projectFiles) {
-            if (file.getName().endsWith(".mcpr") && !file.isDirectory()) {
+            // we check if it's a file and has the correct extension
+            if (!file.isDirectory() && file.getName().endsWith(".mcpr")) {
+                // if it's a file with the correct extension,
+                // we add it to the list of replays
                 replays.add(
                         new ReplayData(
-                            file,
-                            projectFolder,
-                            this
+                                file,
+                                this
                         )
                 );
             }
         }
 
-        // If no .mcpr files existed in the project folder, ask the user to select one or more .mcpr files.
+        // if no .mcpr files existed in the project folder, ask the user to select one or more .mcpr files.
         if (replays.isEmpty()) {
-
             File[] files = IO.openFilePrompt(OS.getMinecraftFolder() + "replay_recordings/", "Replay File", "mcpr");
 
-            if (files != null) {
-                for (File file : files) {
-                    // It should be impossible for non .mcpr files to be returned, but I feel like wasting a few more CPU cycles just to be safe.
-                    if (file.getName().endsWith(".mcpr") && !file.isDirectory()) {
-                        File newFile = new File(projectFolder.getAbsolutePath() + "/" + file.getName());
-                        try {
-                            Files.copy(file.toPath(), newFile.toPath());
-                            replays.add(
-                                    new ReplayData(
-                                        file,
-                                        projectFolder,
-                                        this
-                                    )
-                            );
-                        } catch (IOException exception) {
-                            // If there is a problem, just stop.
-                            System.out.println("Failed to copy file from " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
-                            System.exit(0);
-                        }
-                    }
-                }
-            }
-            // If the user didn't select any files, exit.
-            if (replays.isEmpty()) {
+            // if the user didn't select any files, exit.
+            if (files == null) {
                 System.out.println("No Replays selected, stopping.");
                 System.exit(0);
+            }
+
+            // we loop through all the files the user selected
+            for (File file : files) {
+                File newFile = new File(projectFolder.getAbsolutePath() + "/" + file.getName());
+
+                try {
+                    // we copy the replay to the projects folder
+                    Files.copy(
+                            file.toPath(),
+                            newFile.toPath()
+                    );
+
+                    // and we add the replay to the replays list
+                    replays.add(
+                            new ReplayData(
+                                    file,
+                                    this
+                            )
+                    );
+                } catch (IOException exception) {
+                    // if there is a problem, we send an error
+                    System.out.println("Failed to copy file from " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                    // we print the exception
+                    exception.printStackTrace();
+
+                    // and we exit
+                    System.exit(0);
+                }
             }
         }
 
@@ -104,61 +115,76 @@ public class Main {
             return;
         }
 
-        // Ask the user where temporary file(s) should be located
+        // ask the user where temporary file(s) should be located
         File tempFileDirectory = IO.saveFilePrompt(null);
-
+        // if no folder is given, we exit
         if (tempFileDirectory == null) {
             System.exit(0);
         }
 
         // Okay, time to get working!
 
-        // Get the total number of system CPU threads.
+        // we get the total number of system CPU threads.
         int totalSystemThreadNumber = Runtime.getRuntime().availableProcessors();
-        int executorThreadNumber;
-        if (replays.size() < totalSystemThreadNumber) {
-            executorThreadNumber = replays.size();
-        } else {
-            // Leave at least one system thread idle, don't make the computer unusable.
-            executorThreadNumber = totalSystemThreadNumber - 1;
-            // If for whatever reason the computer only has one CPU core/thread, just use one thread.
-            if (executorThreadNumber < 1) {
-                executorThreadNumber = 1;
-            }
+
+        int executorThreadNumber =
+                (replays.size() < totalSystemThreadNumber)  // if we have less replays than threads
+                        ?
+                replays.size()                              // we set the number of threads to use to the number of replays we have to edit
+                        :
+                totalSystemThreadNumber - 1;                // else, we use all the threads - 1 to not make the computer unusable
+
+        // if for whatever reason the computer only has one CPU core/thread, just use one thread.
+        if (executorThreadNumber < 1) {
+            executorThreadNumber = 1;
         }
 
         System.out.println("Using " + executorThreadNumber + " thread(s) for " + replays.size() + " task(s)...");
 
+        // we create a thread pool for our edit replay tasks
         ExecutorService executor = Executors.newFixedThreadPool(executorThreadNumber);
 
+        // we get the start of execution, to calculate
+        // how long it took bob to edit the replays
         long startTime = System.currentTimeMillis();
 
-        // Submit all tasks.
-        for (ReplayData replay : replays){
+        // we loop through all of our replays
+        for (ReplayData replay : replays) {
+            // and we submit them to
+            // the executor to be executed
             executor.submit(
                     new EditReplayTask(
-                        replay,
-                        tempFileDirectory,
-                        menu
+                            replay,
+                            tempFileDirectory,
+                            menu
                     )
             );
         }
 
-        // Wait for all task to be completed.
+        // wait for all task to be completed.
         executor.shutdown();
+
         try {
-            // Timeout doesn't really matter in this use case as we will want to wait for all tasks to complete before terminating.
+            // timeout doesn't really matter in this use case as we will want to wait for all tasks to complete before terminating.
             executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
         } catch (InterruptedException exception) {
             // This should never happen.
-            System.out.println("Interrupted while waiting for all tasks to complete.");
+            // just in case, we shutdown the executor
             executor.shutdownNow();
+
+            // we print an error and the stacktrace
+            System.out.println("Interrupted while waiting for all tasks to complete.");
             exception.printStackTrace();
+
+            // we also show a message to the user
             JOptionPane.showMessageDialog(null,  "Error:\nInterrupted while waiting for all tasks to complete.");
+            // and we exit
             System.exit(0);
         }
 
+        // we calculate the total execution time
         long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+        // print the total execution time in human-readable format
         System.out.println("Completed " + replays.size() + " task(s) in " + (totalTime / 60) + "m " + (totalTime % 60) + "s");
         System.out.println("File(s) located at " + projectFolder.getAbsolutePath());
 
@@ -185,8 +211,8 @@ public class Main {
     public Projects getProjects() {
         return projects;
     }
+
     public String getProjectName() {
         return this.projectName;
     }
-
 }

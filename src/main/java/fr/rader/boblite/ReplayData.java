@@ -2,14 +2,11 @@ package fr.rader.boblite;
 
 import com.google.gson.Gson;
 import fr.rader.boblite.utils.DataReader;
-import fr.rader.boblite.utils.IO;
-import fr.rader.boblite.utils.OS;
 import fr.rader.boblite.utils.ReplayZip;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,18 +15,13 @@ public class ReplayData {
     private Map<String, Object> metaData = new HashMap<>();
 
     private final ReplayZip replayZip;
-    private final File projectFolder;
+    private final File mcprFile;
+
     private final Main main;
 
-    private File mcprFile;
-
-    public ReplayData(File mcprFile, File projectFolder, Main main) throws NullPointerException {
+    public ReplayData(File mcprFile, Main main) throws NullPointerException {
         if (mcprFile == null) {
             throw new NullPointerException("The mcpr file cannot be null");
-        }
-
-        if (projectFolder == null) {
-            throw new NullPointerException("The project folder cannot be null");
         }
 
         if (main == null) {
@@ -37,7 +29,6 @@ public class ReplayData {
         }
 
         this.mcprFile = mcprFile;
-        this.projectFolder = projectFolder;
         this.main = main;
 
         this.replayZip = new ReplayZip(mcprFile);
@@ -82,10 +73,6 @@ public class ReplayData {
         main.getProjects().saveProjects();
 
         System.exit(0);
-    }
-
-    public File getMcprFile() {
-        return mcprFile;
     }
 
     public Object getMetaData(String key) {

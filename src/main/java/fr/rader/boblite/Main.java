@@ -54,17 +54,18 @@ public class Main {
                         new ReplayData(
                         file,
                         projectFolder,
-                        this)
+                        this
+                        )
                 );
             }
         }
 
         // If no .mcpr files existed in the project folder, ask the user to select one or more .mcpr files.
-        if(replays.isEmpty()) {
+        if (replays.isEmpty()) {
 
             File[] files = IO.openFilePrompt(OS.getMinecraftFolder() + "replay_recordings/", "Replay File", "mcpr");
 
-            if(files != null) {
+            if (files != null) {
                 for (File file : files) {
                     // It should be impossible for non .mcpr files to be returned, but I feel like wasting a few more CPU cycles just to be safe.
                     if (file.getName().endsWith(".mcpr") && !file.isDirectory()) {
@@ -75,7 +76,8 @@ public class Main {
                                     new ReplayData(
                                     file,
                                     projectFolder,
-                                    this)
+                                    this
+                                    )
                             );
                         } catch (IOException exception) {
                             // If there is a problem, just stop.
@@ -86,7 +88,7 @@ public class Main {
                 }
             }
             // If the user didn't select any files, exit.
-            if(replays.isEmpty()) {
+            if (replays.isEmpty()) {
                 System.out.println("No Replays selected, stopping.");
                 System.exit(0);
             }
@@ -120,7 +122,7 @@ public class Main {
             // Leave at least one system thread idle, don't make the computer unusable.
             executorThreadNumber = totalSystemThreadNumber - 1;
             // If for whatever reason the computer only has one CPU core/thread, just use one thread.
-            if(executorThreadNumber < 1) {
+            if (executorThreadNumber < 1) {
                 executorThreadNumber = 1;
             }
         }
@@ -132,12 +134,13 @@ public class Main {
         long startTime = System.currentTimeMillis();
 
         // Submit all tasks.
-        for(ReplayData replay : replays){
+        for (ReplayData replay : replays){
             executor.submit(
                     new EditReplayTask(
                     replay,
                     tempFileDirectory,
-                    menu)
+                    menu
+                    )
             );
         }
 

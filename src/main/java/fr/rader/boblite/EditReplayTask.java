@@ -42,11 +42,14 @@ public class EditReplayTask implements Runnable {
 
     @Override
     public void run() {
-        // here, we get the correct packet id depending on the protocol version
+        // we get the minecraft version from the replay's metadata
+        String minecraftVersion = (String) replayData.getMetaData("mcversion");
+
+        // here, we get the correct packet id depending on the minecraft version
         int timePacketID;
         int weatherPacketID;
         int chatPacketID;
-        switch ((String) replayData.getMetaData("mcversion")) {
+        switch (minecraftVersion) {
             case "1.8":
             case "1.8.1":
             case "1.8.2":
@@ -131,7 +134,7 @@ public class EditReplayTask implements Runnable {
 
             // we show an error and stop if the protocol isn't supported
             default:
-                JOptionPane.showMessageDialog(null, "Error: unsupported Minecraft version: " + replayData.getMetaData("mcversion"));
+                JOptionPane.showMessageDialog(null, "Error: unsupported Minecraft version: " + minecraftVersion);
                 return;
         }
 

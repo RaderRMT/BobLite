@@ -23,7 +23,7 @@ public class ReplayFileFilter extends FileFilter {
         for (String extension : extensions) {
             // check if the file is a file and
             // if it ends with a valid extension
-            if (!file.isDirectory() && file.getName().endsWith(extension)) {
+            if (file.isFile() && file.getName().endsWith(extension)) {
                 // if it does, it's accepted
                 return true;
             }

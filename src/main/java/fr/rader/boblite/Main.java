@@ -52,9 +52,9 @@ public class Main {
             if (file.getName().endsWith(".mcpr") && !file.isDirectory()) {
                 replays.add(
                         new ReplayData(
-                        file,
-                        projectFolder,
-                        this
+                            file,
+                            projectFolder,
+                            this
                         )
                 );
             }
@@ -74,14 +74,14 @@ public class Main {
                             Files.copy(file.toPath(), newFile.toPath());
                             replays.add(
                                     new ReplayData(
-                                    file,
-                                    projectFolder,
-                                    this
+                                        file,
+                                        projectFolder,
+                                        this
                                     )
                             );
                         } catch (IOException exception) {
                             // If there is a problem, just stop.
-                            System.out.println("Failed to copy file from " + file.getAbsolutePath().toString() + " to " + newFile.getAbsolutePath().toString());
+                            System.out.println("Failed to copy file from " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
                             System.exit(0);
                         }
                     }
@@ -137,9 +137,9 @@ public class Main {
         for (ReplayData replay : replays){
             executor.submit(
                     new EditReplayTask(
-                    replay,
-                    tempFileDirectory,
-                    menu
+                        replay,
+                        tempFileDirectory,
+                        menu
                     )
             );
         }
@@ -158,10 +158,9 @@ public class Main {
             System.exit(0);
         }
 
-
-        long finishTime = System.currentTimeMillis();
-        System.out.println("Completed " + replays.size() + " task(s) in " + (int)(((finishTime - startTime) / 1000) / 60) + "m " + (int)(((finishTime - startTime) / 1000) % 60) + "s");
-        System.out.println("File(s) located at " + projectFolder.getAbsolutePath().toString());
+        long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+        System.out.println("Completed " + replays.size() + " task(s) in " + (totalTime / 60) + "m " + (totalTime % 60) + "s");
+        System.out.println("File(s) located at " + projectFolder.getAbsolutePath());
 
         // Open the file explorer where the replay(s) are saved.
         IO.openFileExplorer(projectFolder);

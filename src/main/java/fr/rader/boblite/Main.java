@@ -151,6 +151,7 @@ public class Main {
             System.out.println("Interrupted while waiting for all tasks to complete.");
             executor.shutdownNow();
             exception.printStackTrace();
+            JOptionPane.showMessageDialog(null,  "Error:\nInterrupted while waiting for all tasks to complete.");
             System.exit(0);
         }
 

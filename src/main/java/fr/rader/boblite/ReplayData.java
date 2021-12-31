@@ -24,15 +24,15 @@ public class ReplayData {
     private File mcprFile;
 
     public ReplayData(File mcprFile, File projectFolder, Main main) throws NullPointerException {
-        if(mcprFile == null) {
+        if (mcprFile == null) {
             throw new NullPointerException("The mcpr file cannot be null");
         }
 
-        if(projectFolder == null) {
+        if (projectFolder == null) {
             throw new NullPointerException("The project folder cannot be null");
         }
 
-        if(main == null) {
+        if (main == null) {
             throw new NullPointerException("main is null");
         }
 

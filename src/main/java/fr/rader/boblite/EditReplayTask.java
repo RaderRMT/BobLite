@@ -20,13 +20,15 @@ public class EditReplayTask implements Runnable {
     private final boolean removeRain;
 
     public EditReplayTask(ReplayData replayData, File tempFileDirectory, Menu menu) throws NullPointerException {
-        if(replayData == null){
+        if(replayData == null) {
             throw new NullPointerException("replayData is null");
         }
-        if(tempFileDirectory == null){
+
+        if(tempFileDirectory == null) {
             throw new NullPointerException("tempFileDirectory is null");
         }
-        if(menu == null){
+
+        if(menu == null) {
             throw new NullPointerException("menu is null");
         }
 
@@ -37,8 +39,6 @@ public class EditReplayTask implements Runnable {
         this.newTime = menu.getNewTime();
         this.removeRain = menu.isRemoveRainChecked();
     }
-
-
 
     @Override
     public void run() {
@@ -249,7 +249,6 @@ public class EditReplayTask implements Runnable {
 
             // kill the progress bar window as it's now useless
             progressBar.kill();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -143,16 +143,17 @@ public class Main {
 
         // Wait for all task to be completed.
         executor.shutdown();
-
-        boolean isDone = false;
-
-        while(!isDone) {
-
-            try {
-                // Timeout doesn't really matter in this use case as we will want to wait for all tasks to complete before terminating.
-                isDone = executor.awaitTermination(7, TimeUnit.DAYS);
-            } catch (InterruptedException ex) { }
+        try {
+            // Timeout doesn't really matter in this use case as we will want to wait for all tasks to complete before terminating.
+            executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException exception) {
+            // This should never happen.
+            System.out.println("Interrupted while waiting for all tasks to complete.");
+            executor.shutdownNow();
+            exception.printStackTrace();
+            System.exit(0);
         }
+
 
         long finishTime = System.currentTimeMillis();
         System.out.println("Completed " + replays.size() + " task(s) in " + (int)(((finishTime - startTime) / 1000) / 60) + "m " + (int)(((finishTime - startTime) / 1000) % 60) + "s");

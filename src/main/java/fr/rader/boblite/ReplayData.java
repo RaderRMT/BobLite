@@ -20,10 +20,6 @@ public class ReplayData {
     private final BobLite bobLite;
 
     public ReplayData(File mcprFile, BobLite bobLite) throws NullPointerException {
-        if (mcprFile == null) {
-            throw new NullPointerException("The mcpr file cannot be null");
-        }
-
         this.mcprFile = mcprFile;
         this.bobLite = bobLite;
 

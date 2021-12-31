@@ -12,38 +12,32 @@ import java.io.IOException;
 
 public class EditReplayTask implements Runnable {
 
-    private final ReplayData replayData;
     private final File tempFileDirectory;
+
+    private final ReplayData replayData;
+
     private final boolean removeChat;
     private final boolean changeTime;
-    private final int newTime;
     private final boolean removeRain;
 
+    private final int newTime;
+
     public EditReplayTask(ReplayData replayData, File tempFileDirectory, Menu menu) throws NullPointerException {
-        if (replayData == null) {
-            throw new NullPointerException("replayData is null");
-        }
-
-        if (tempFileDirectory == null) {
-            throw new NullPointerException("tempFileDirectory is null");
-        }
-
-        if (menu == null) {
-            throw new NullPointerException("menu is null");
-        }
+        this.tempFileDirectory = tempFileDirectory;
 
         this.replayData = replayData;
-        this.tempFileDirectory = tempFileDirectory;
+
         this.removeChat = menu.isRemoveChatChecked();
         this.changeTime = menu.isChangeTimeChecked();
-        this.newTime = menu.getNewTime();
         this.removeRain = menu.isRemoveRainChecked();
+
+        this.newTime = menu.getNewTime();
     }
 
     @Override
     public void run() {
         // we get the minecraft version from the replay's metadata
-        String minecraftVersion = (String) replayData.getMetaData("mcversion");
+        String minecraftVersion = (String) this.replayData.getMetaData("mcversion");
 
         // here, we get the correct packet id depending on the minecraft version
         int timePacketID;
@@ -156,7 +150,7 @@ public class EditReplayTask implements Runnable {
             Double duration = (Double) replayData.getMetaData("duration");
             // creating the progress bar and setting the action text
             ProgressBar progressBar = new ProgressBar(duration.intValue());
-            progressBar.setActionText("Editing the replay...");
+            progressBar.setActionText("Editing " + replayData.getMcprFile().getName() + "...");
             // showing the progress bar
             progressBar.show();
 
@@ -241,7 +235,7 @@ public class EditReplayTask implements Runnable {
 
             // changing the progress bar action text,
             // as we're now doing something else
-            progressBar.setActionText("Writing the replay, this can take a while...");
+            progressBar.setActionText("Writing " + this.replayData.getMcprFile().getName() + ", this can take a while...");
 
             // we open the zip file, write the recording.tmcpr file and close the zip
             replayZip.open();

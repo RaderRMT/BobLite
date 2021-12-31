@@ -71,6 +71,10 @@ public class ReplayData {
         System.exit(0);
     }
 
+    public File getMcprFile() {
+        return mcprFile;
+    }
+
     public Object getMetaData(String key) {
         return metaData.get(key);
     }

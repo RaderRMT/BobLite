@@ -93,7 +93,7 @@ public class BobLite {
                     // and we add the replay to the replays list
                     replays.add(
                             new ReplayData(
-                                    file,
+                                    newFile,
                                     this
                             )
                     );
@@ -134,9 +134,9 @@ public class BobLite {
         int executorThreadNumber =
                 (replays.size() < totalSystemThreadNumber)  // if we have less replays than threads
                         ?
-                        replays.size()                              // we set the number of threads to use to the number of replays we have to edit
+                replays.size()                              // we set the number of threads to use to the number of replays we have to edit
                         :
-                        totalSystemThreadNumber - 1;                // else, we use all the threads - 1 to not make the computer unusable
+                totalSystemThreadNumber - 1;                // else, we use all the threads - 1 to not make the computer unusable
 
         // if for whatever reason the computer only has one CPU core/thread, just use one thread.
         if (executorThreadNumber < 1) {

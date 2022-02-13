@@ -37,16 +37,13 @@ public class DataReader {
      * Read a file
      * @param file File to read
      */
-    public DataReader(File file) {
+    public DataReader(File file) throws FileNotFoundException {
         if (file == null) {
             throw new IllegalArgumentException("file must not be null");
         }
 
-        try {
-            inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        inputStream = new FileInputStream(file);
+
     }
 
     /**

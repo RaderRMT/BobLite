@@ -2,12 +2,17 @@ package fr.rader.boblite;
 
 import fr.rader.boblite.guis.Menu;
 import fr.rader.boblite.guis.ProjectSelector;
+import fr.rader.boblite.nbt.NBTCompound;
+import fr.rader.boblite.nbt.NBTString;
+import fr.rader.boblite.utils.DataReader;
+import fr.rader.boblite.utils.DataWriter;
 import fr.rader.boblite.utils.IO;
 import fr.rader.boblite.utils.OS;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -120,11 +125,13 @@ public class BobLite {
         }
 
         // ask the user where temporary file(s) should be located
-        File tempFileDirectory = IO.saveFilePrompt(null);
+        File tempFileDirectory = IO.saveFilePrompt(getTempDirectoryPath());
         // if no folder is given, we exit
         if (tempFileDirectory == null) {
             System.exit(0);
         }
+
+        writeTempDirectoryPath(tempFileDirectory.getAbsolutePath());
 
         // Okay, time to get working!
 
@@ -202,5 +209,32 @@ public class BobLite {
 
     public String getProjectName() {
         return projectName;
+    }
+
+    public String getTempDirectoryPath() {
+        // read settings
+
+        try {
+            DataReader reader = new DataReader(new File(OS.getBobFolder() + "settings.nbt"));
+
+            NBTCompound compound = reader.readNBT();
+
+            if (compound.contains("tempFolder")) {
+                return compound.getComponent("tempFolder").getAsString();
+            }
+
+        } catch (IOException e) {
+            System.out.println("No settings.nbt was found");
+        }
+        return null;
+    }
+
+    public void writeTempDirectoryPath(String newTempDirectoryPath) {
+
+        NBTCompound tag = new NBTCompound("")
+                .addString("tempFolder", newTempDirectoryPath);
+
+        IO.writeNBTFile(new File(OS.getBobFolder() + "settings.nbt"), tag);
+
     }
 }

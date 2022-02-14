@@ -9,6 +9,7 @@ import fr.rader.boblite.utils.ReplayZip;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class EditReplayTask implements Runnable {
 
@@ -239,8 +240,10 @@ public class EditReplayTask implements Runnable {
 
             // we open the zip file, write the recording.tmcpr file and close the zip
             replayZip.open();
-            replayZip.addFile(writer.getInputStream(), "recording.tmcpr");
+            InputStream is = writer.getInputStream();
+            replayZip.addFile(is, "recording.tmcpr");
             replayZip.close();
+            is.close();
 
             writer.clear();
 

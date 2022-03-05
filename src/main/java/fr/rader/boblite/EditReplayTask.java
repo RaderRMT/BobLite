@@ -121,6 +121,7 @@ public class EditReplayTask implements Runnable {
 
             case "1.18":
             case "1.18.1":
+            case "1.18.2":
                 timePacketID = 0x59;
                 weatherPacketID = 0x1E;
                 chatPacketID = 0x0F;

@@ -19,7 +19,7 @@ This is the lite version of Bob.
 - 1.15.x
 - 1.16.x
 - 1.17.x
-- 1.18(.1)
+- 1.18.x
 
 ## How to use:
 

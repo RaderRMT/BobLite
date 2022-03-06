@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import fr.rader.boblite.BobLite;
 import fr.rader.boblite.listeners.menu.ChangeTimeListener;
+import fr.rader.boblite.listeners.menu.ChangeWeatherListener;
 import fr.rader.boblite.listeners.menu.GoListener;
 
 import javax.swing.*;
@@ -15,14 +16,17 @@ public class Menu {
 
     private JPanel panel;
 
-    private JLabel removeRainLabel;
+    private JLabel changeWeatherLabel;
+    private JLabel newWeatherLabel;
     private JLabel changeTimeLabel;
     private JLabel newTimeLabel;
     private JLabel removeChatLabel;
 
-    private JCheckBox removeRainCheckBox;
+    private JCheckBox changeWeatherCheckBox;
     private JCheckBox changeTimeCheckBox;
     private JCheckBox removeChatCheckBox;
+
+    private JComboBox<String> newWeatherComboBox;
 
     private JSpinner newTimeSpinner;
 
@@ -53,9 +57,12 @@ public class Menu {
     }
 
     private void setComponentActionListener() {
-        // this changes the newTimeSpinner enabled state when changeTimeCheckBox
-        // is checked or not
+        // this changes the newTimeSpinner enabled state when
+        // changeTimeCheckBox is checked or not
         changeTimeCheckBox.addActionListener(new ChangeTimeListener(this));
+        // this changes the newWeatherComboBox enabled state when
+        // changeWeatherCheckBox is checked or not
+        changeWeatherCheckBox.addActionListener(new ChangeWeatherListener(this));
 
         // this just changes the goPressed boolean to true
         // and dispose of the dialog
@@ -97,8 +104,8 @@ public class Menu {
      * @return true if removeRainCheckBox is selected<br>
      * false otherwise
      */
-    public boolean isRemoveRainChecked() {
-        return removeRainCheckBox.isSelected();
+    public boolean isChangeWeatherChecked() {
+        return changeWeatherCheckBox.isSelected();
     }
 
     /**
@@ -139,6 +146,14 @@ public class Menu {
         return newTimeSpinner;
     }
 
+    public JComboBox<String> getNewWeatherComboBox() {
+        return newWeatherComboBox;
+    }
+
+    public String getSelectedNewWeather() {
+        return (String) newWeatherComboBox.getSelectedItem();
+    }
+
     /**
      * Show the dialog on the screen
      */
@@ -169,35 +184,45 @@ public class Menu {
     private void $$$setupUI$$$() {
         createUIComponents();
         panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
-        removeRainCheckBox = new JCheckBox();
-        removeRainCheckBox.setEnabled(true);
-        removeRainCheckBox.setSelected(true);
-        removeRainCheckBox.setText("");
-        panel.add(removeRainCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        removeRainLabel = new JLabel();
-        removeRainLabel.setText("Remove Rain");
-        panel.add(removeRainLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        changeTimeLabel = new JLabel();
-        changeTimeLabel.setText("Change Time");
-        panel.add(changeTimeLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        changeTimeCheckBox = new JCheckBox();
-        changeTimeCheckBox.setSelected(true);
-        changeTimeCheckBox.setText("");
-        panel.add(changeTimeCheckBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(18, 17), null, 0, false));
-        newTimeLabel = new JLabel();
-        newTimeLabel.setText("New Time (in ticks):");
-        panel.add(newTimeLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.setLayout(new GridLayoutManager(6, 2, new Insets(0, 0, 0, 0), -1, -1));
+        newWeatherLabel = new JLabel();
+        newWeatherLabel.setText("New Weather:");
+        panel.add(newWeatherLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         goButton = new JButton();
         goButton.setText("Go!");
-        panel.add(goButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        panel.add(newTimeSpinner, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.add(goButton, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         removeChatLabel = new JLabel();
         removeChatLabel.setText("Remove Chat");
-        panel.add(removeChatLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.add(removeChatLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         removeChatCheckBox = new JCheckBox();
         removeChatCheckBox.setText("");
-        panel.add(removeChatCheckBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel.add(removeChatCheckBox, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        newWeatherComboBox = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("Clear");
+        defaultComboBoxModel1.addElement("Rain");
+        defaultComboBoxModel1.addElement("Thunder");
+        newWeatherComboBox.setModel(defaultComboBoxModel1);
+        panel.add(newWeatherComboBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        changeTimeLabel = new JLabel();
+        changeTimeLabel.setText("Change Time");
+        panel.add(changeTimeLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        changeTimeCheckBox = new JCheckBox();
+        changeTimeCheckBox.setText("");
+        panel.add(changeTimeCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        changeWeatherLabel = new JLabel();
+        changeWeatherLabel.setText("Change Weather");
+        panel.add(changeWeatherLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        changeWeatherCheckBox = new JCheckBox();
+        changeWeatherCheckBox.setEnabled(true);
+        changeWeatherCheckBox.setSelected(true);
+        changeWeatherCheckBox.setText("");
+        panel.add(changeWeatherCheckBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        newTimeLabel = new JLabel();
+        newTimeLabel.setText("New Time (in ticks):");
+        panel.add(newTimeLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        newTimeSpinner.setEnabled(false);
+        panel.add(newTimeSpinner, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

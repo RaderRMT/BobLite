@@ -19,9 +19,10 @@ public class EditReplayTask implements Runnable {
 
     private final boolean removeChat;
     private final boolean changeTime;
-    private final boolean removeRain;
+    private final boolean changeWeather;
 
     private final int newTime;
+    private String newWeather;
 
     public EditReplayTask(ReplayData replayData, File tempFileDirectory, Menu menu) throws NullPointerException {
         this.tempFileDirectory = tempFileDirectory;
@@ -30,9 +31,10 @@ public class EditReplayTask implements Runnable {
 
         this.removeChat = menu.isRemoveChatChecked();
         this.changeTime = menu.isChangeTimeChecked();
-        this.removeRain = menu.isRemoveRainChecked();
+        this.changeWeather = menu.isChangeWeatherChecked();
 
         this.newTime = menu.getNewTime();
+        this.newWeather = menu.getSelectedNewWeather();
     }
 
     @Override
@@ -194,34 +196,74 @@ public class EditReplayTask implements Runnable {
                     continue;
                 }
 
-                // check if the packet id is a weather packet,
-                // and if the removeRain checkbox is checked
-                if (this.removeRain && packetID == weatherPacketID) {
-                    // get the reason, we don't want to ignore it because
-                    // this packet isn't always used for the weather
-                    int reason = reader.readByte();
+                // check if we change the weather
+                if (this.changeWeather) {
+                    if (packetID == weatherPacketID) {
+                        int reason = reader.readByte();
 
-                    // reason == 1 -> end raining
-                    // reason == 2 -> begin raining
-                    // reason == 7 -> rain level change
-                    // reason == 8 -> thunder level change
-                    // iirc reason 1 and 2 are swapped
-                    if (reason != 1 && reason != 2 && reason != 7 && reason != 8) {
-                        // if the packet does not change the rain, we write it
-                        // packet header
-                        writer.writeInt(timestamp);
-                        writer.writeInt(size);
-                        writer.writeVarInt(packetID);
+                        // write the packet and continue if the reason does4n't affect the weather
+                        if (reason != 1 && reason != 2 && reason != 7 && reason != 8) {
+                            // if the packet does not change the rain, we write it
+                            // packet header
+                            writer.writeInt(timestamp);
+                            writer.writeInt(size);
+                            writer.writeVarInt(packetID);
+                            // packet content
+                            writer.writeByte(reason);
+                            writer.writeFloat(reader.readFloat());
+                            continue;
+                        }
 
-                        // packet content
-                        writer.writeByte(reason);
-                        writer.writeFloat(reader.readFloat());
+                        // if we want to clear the weather,
+                        // we don't write the weather packets
+                        if (this.newWeather.equals("Clear")) {
+                            reader.skip(4);
+                            continue;
+                        }
                     } else {
-                        // we skip the next 4 bytes (new rain/thunder level)
-                        reader.skip(4);
-                    }
+                        if (packetID == 0x4B) {
+                            // we write the packet timestamp, size, packet id
+                            writer.writeInt(timestamp);
+                            writer.writeInt(size);
+                            writer.writeVarInt(packetID);
+                            // and finally, we write the packet data
+                            writer.writeByteArray(reader.readFollowingBytes(size - 1));
 
-                    continue;
+                            // adding rain or thunder should tell the client
+                            // that the rain is beginning and setting the rain level to max
+                            if (this.newWeather.equals("Rain") || this.newWeather.equals("Thunder")) {
+                                // begin rain packet
+                                writer.writeInt(timestamp);
+                                writer.writeInt(6);
+                                writer.writeVarInt(weatherPacketID);
+                                writer.writeByte(1);
+                                writer.writeFloat(0);
+
+                                // set rain level to max
+                                writer.writeInt(timestamp);
+                                writer.writeInt(6);
+                                writer.writeVarInt(weatherPacketID);
+                                writer.writeByte(7);
+                                writer.writeFloat(1.0f);
+                            }
+
+                            // and if we change the time to thunder,
+                            // then we set the thunder level to max
+                            if (this.newWeather.equals("Thunder")) {
+                                writer.writeInt(timestamp);
+                                writer.writeInt(6);
+                                writer.writeVarInt(weatherPacketID);
+
+                                writer.writeByte(8);
+                                writer.writeFloat(1.0f);
+                            }
+
+                            // then we change the new weather to clear
+                            // so we clear the useless weather packets
+                            newWeather = "Clear";
+                            continue;
+                        }
+                    }
                 }
 
                 // we write the packet timestamp, size, packet id

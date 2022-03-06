@@ -240,10 +240,10 @@ public class EditReplayTask implements Runnable {
 
             // we open the zip file, write the recording.tmcpr file and close the zip
             replayZip.open();
-            InputStream is = writer.getInputStream();
-            replayZip.addFile(is, "recording.tmcpr");
+            InputStream inputStream = writer.getInputStream();
+            replayZip.addFile(inputStream, "recording.tmcpr");
             replayZip.close();
-            is.close();
+            inputStream.close();
 
             writer.clear();
 

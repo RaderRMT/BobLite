@@ -43,9 +43,10 @@ public class EditReplayTask implements Runnable {
         String minecraftVersion = (String) this.replayData.getMetaData("mcversion");
 
         // here, we get the correct packet id depending on the minecraft version
-        int timePacketID;
-        int weatherPacketID;
-        int chatPacketID;
+        int timePacketID = 0;
+        int weatherPacketID = 0;
+        int spawnPositionID = 0;
+        int chatPacketID = 0;
         switch (minecraftVersion) {
             case "1.8":
             case "1.8.1":
@@ -59,6 +60,7 @@ public class EditReplayTask implements Runnable {
             case "1.8.9":
                 timePacketID = 0x03;
                 weatherPacketID = 0x2B;
+                spawnPositionID = 0x05;
                 chatPacketID = 0x02;
                 break;
 
@@ -75,14 +77,21 @@ public class EditReplayTask implements Runnable {
             case "1.11.2":
                 timePacketID = 0x44;
                 weatherPacketID = 0x1E;
+                spawnPositionID = 0x43;
                 chatPacketID = 0x0F;
                 break;
 
             case "1.12":
+                spawnPositionID = 0x45;
             case "1.12.1":
             case "1.12.2":
                 timePacketID = 0x47;
                 weatherPacketID = 0x1E;
+
+                if (spawnPositionID == 0) {
+                    spawnPositionID = 0x46;
+                }
+
                 chatPacketID = 0x0F;
                 break;
 
@@ -93,6 +102,7 @@ public class EditReplayTask implements Runnable {
             case "1.14.4":
                 timePacketID = 0x4E;
                 weatherPacketID = 0x1E;
+                spawnPositionID = 0x4D;
                 chatPacketID = 0x0E;
                 break;
 
@@ -101,6 +111,7 @@ public class EditReplayTask implements Runnable {
             case "1.15.2":
                 timePacketID = 0x4F;
                 weatherPacketID = 0x1F;
+                spawnPositionID = 0x4E;
                 chatPacketID = 0x0F;
                 break;
 
@@ -112,6 +123,7 @@ public class EditReplayTask implements Runnable {
             case "1.16.5":
                 timePacketID = 0x4E;
                 weatherPacketID = 0x1D;
+                spawnPositionID = 0x42;
                 chatPacketID = 0x0E;
                 break;
 
@@ -119,6 +131,7 @@ public class EditReplayTask implements Runnable {
             case "1.17.1":
                 timePacketID = 0x58;
                 weatherPacketID = 0x1E;
+                spawnPositionID = 0x4B;
                 chatPacketID = 0x0F;
                 break;
 
@@ -127,6 +140,7 @@ public class EditReplayTask implements Runnable {
             case "1.18.2":
                 timePacketID = 0x59;
                 weatherPacketID = 0x1E;
+                spawnPositionID = 0x4B;
                 chatPacketID = 0x0F;
                 break;
 
@@ -221,7 +235,7 @@ public class EditReplayTask implements Runnable {
                             continue;
                         }
                     } else {
-                        if (packetID == 0x4B) {
+                        if (packetID == spawnPositionID) {
                             // we write the packet timestamp, size, packet id
                             writer.writeInt(timestamp);
                             writer.writeInt(size);

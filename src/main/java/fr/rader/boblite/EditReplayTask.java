@@ -149,6 +149,13 @@ public class EditReplayTask implements Runnable {
                 chatPacketID = 0x0F;
                 break;
 
+            case "1.19 Pre-release 3":
+                timePacketID = 0x59;
+                weatherPacketID = 0x1B;
+                spawnPositionID = 0x4A;
+                chatPacketID = 0x30;
+                break;
+
             // we show an error and stop if the protocol isn't supported
             default:
                 JOptionPane.showMessageDialog(null, "Error: unsupported Minecraft version: " + minecraftVersion);

@@ -150,6 +150,7 @@ public class EditReplayTask implements Runnable {
                 break;
 
             case "1.19 Pre-release 3":
+            case "1.19":
                 timePacketID = 0x59;
                 weatherPacketID = 0x1B;
                 spawnPositionID = 0x4A;

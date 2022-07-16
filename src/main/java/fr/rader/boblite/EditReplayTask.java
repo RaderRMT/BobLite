@@ -185,12 +185,19 @@ public class EditReplayTask implements Runnable {
             // showing the progress bar
             progressBar.show();
 
+            int i = 0;
+
             // iterate while we still have some data in the reader
             while (reader.getLength() != 0) {
                 // get the timestamp, the size and the packet id
                 int timestamp = reader.readInt();
                 int size = reader.readInt();
                 int packetID = reader.readVarInt();
+
+                i++;
+                if (i == 500) {
+                    System.out.println("break");
+                }
 
                 // changing the progress bar value
                 progressBar.setProgressBarValue(timestamp);
@@ -245,8 +252,13 @@ public class EditReplayTask implements Runnable {
                         // we don't write the weather packets
                         if (this.newWeather.equals("Clear")) {
                             reader.skip(4);
-                            continue;
+                        } else {
+                            // otherwise, we write the float to the recording
+                            // and continue to the next packet
+                            writer.writeFloat(reader.readFloat());
                         }
+
+                        continue;
                     } else {
                         if (packetID == spawnPositionID) {
                             // we write the packet timestamp, size, packet id

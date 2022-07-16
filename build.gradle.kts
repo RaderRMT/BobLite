@@ -10,7 +10,7 @@ application {
 }
 
 group = "fr.rader"
-version = "1.6.3"
+version = "1.6.4"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

@@ -149,12 +149,17 @@ public class EditReplayTask implements Runnable {
                 chatPacketID = 0x0F;
                 break;
 
-            case "1.19 Pre-release 3":
             case "1.19":
                 timePacketID = 0x59;
                 weatherPacketID = 0x1B;
                 spawnPositionID = 0x4A;
                 chatPacketID = 0x30;
+                break;
+            case "1.19.1":
+                timePacketID = 0x5C;
+                weatherPacketID = 0x1D;
+                spawnPositionID = 0x4D;
+                chatPacketID = 0x33;
                 break;
 
             // we show an error and stop if the protocol isn't supported

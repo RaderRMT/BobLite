@@ -66,6 +66,9 @@ public class IO {
         // show hidden files
         fileChooser.setFileHidingEnabled(false);
 
+        // Save dialouge does not appear without sleeping for at least 2 ms on M1 mac?
+        try {Thread.sleep(10);} catch (InterruptedException e) {}
+
         // show the save file chooser to the user and wait for an answer
         int option = fileChooser.showSaveDialog(null);
 
